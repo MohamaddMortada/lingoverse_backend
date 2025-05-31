@@ -94,46 +94,54 @@ class ChallengeController extends Controller {
 {
     $request->validate([
         'language' => 'required|string|max:50',
+        'native' => 'required|string|max:50',
         'level' => 'required|string|max:50',
     ]);
 
     $language = $request->language;
+    $native = $request->native;
     $level = $request->level;
 
-    $prompt = <<<EOT
-You are a professional language tutor helping students learn a new language.
+$prompt = <<<EOT
+You are a professional language teacher helping students learn a new language.
 
-Create an educational challenge set for a student learning **{$language}** at a **{$level}** level. The goal is to improve vocabulary, grammar, comprehension, and fluency in {$language}.
+The student’s native language is "{$native}" and they are learning "{$language}" at a "{$level}" level.
 
-First, give a short topic title (1–3 words) in {$language} — this should reflect the learning objective (e.g., "Food Vocabulary", "Present Tense", "Daily Routines").
+Your job is to generate a challenge set that helps them improve vocabulary, grammar, fluency, and comprehension in "{$language}".
 
-Then, create 3 to 5 **educational tasks** in {$language} that help the student practice and improve their language skills related to that topic. The tasks can include:
-- Translating short phrases or words
-- Creating sentences using specific words
-- Identifying grammar or vocabulary mistakes
-- Matching words with definitions
-- Describing images or situations
-- Short question-answer exercises
+**Instructions:**
 
-Write everything in **{$language}**, including instructions and tasks. Avoid English unless necessary.
+1. Start with a short, meaningful topic title (1–3 words) in "{$language}" (e.g., "الماضي البسيط", "أسماء الحيوانات", "شراء الطعام").
+2. Then, create 3–5 **logical, valuable** learning tasks.
+3. **Each task instruction must be written in "{$native}"**, and the **expected student response must be in "{$language}"**.
+4. Do **not** include translation requests or examples where the source and target language are the same.
+5. Use task types such as:
+   - Compose a sentence using specific vocabulary
+   - Answer a question in "{$language}"
+   - Fill-in-the-blank using the correct word/tense
+   - Respond to a short scenario
+   - Describe a picture or daily situation
+6. Avoid repetition, filler, or meaningless exercises.
 
-Return ONLY in this **strict JSON format**:
+**Return only in this exact JSON format (no explanation or markdown):**
+
 {
-  "title": "A short topic title in {$language}",
+  "title": "Title in {$language}",
   "challenges": [
-    "Challenge description 1 in {$language}",
-    "Challenge description 2 in {$language}",
+    "Instruction 1 in {$native} (expect answer in {$language})",
+    "Instruction 2 in {$native} (expect answer in {$language})",
     ...
   ]
 }
 EOT;
 
 
+
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . config('services.openai.key'),
         'Content-Type' => 'application/json',
     ])->post('https://api.openai.com/v1/chat/completions', [
-        'model' => 'gpt-3.5-turbo',
+'model' => 'gpt-4',
         'messages' => [
             ['role' => 'user', 'content' => $prompt],
         ],

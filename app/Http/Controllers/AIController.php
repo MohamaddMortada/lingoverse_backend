@@ -25,6 +25,7 @@ class AIController extends Controller
 Generate a short {$language} reading passage (3 to 4 sentences). It should be appropriate for students practicing reading fluency. Avoid difficult vocabulary. Keep the tone simple and educational.
 
 Reply with just the paragraph, no headers, no explanations.
+For example, make it about any sports,Football, players, university, old story, family, anything, most important thing is to always generate a new topic.
 EOT;
 
     $response = Http::withHeaders([

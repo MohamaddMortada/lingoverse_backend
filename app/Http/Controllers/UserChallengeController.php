@@ -149,6 +149,7 @@ public function evaluateAnswer(Request $request)
         'user_id' => 'required|exists:users,id',
         'challenge_id' => 'required|exists:challenges,id',
         'user_answer' => 'required|string',
+        'language'  => 'required|string',
     ]);
 
     $challenge = Challenge::find($request->challenge_id);
@@ -166,7 +167,7 @@ Evaluate the answer and reply ONLY in strict JSON format like this:
 {
   "is_correct": true or false,
   "score": number from 0 to 100,
-  "feedback": "short explanation or correction"
+  "feedback": "short explanation or correction in the {$request->language} language "
 }
 EOT;
 
