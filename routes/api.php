@@ -88,3 +88,5 @@ Route::post('/speech/chat', [ChatSessionController::class, 'chatWithAI']);
 Route::get('/user-progress/stats/{userId}', [UserProgressController::class, 'getUserStats']);
 
 Route::get('/dashboard/users', [UserController::class, 'getUserDashboardStats']);
+
+Route::post('/users/verify-password', [UserController::class, 'verifyPassword']);

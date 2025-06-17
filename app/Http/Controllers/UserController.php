@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserChallenge;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -131,7 +133,25 @@ class UserController extends Controller
 
     return response()->json($data);
 }
+public function verifyPassword(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|integer|exists:users,id',
+        'password' => 'required|string',
+    ]);
 
+    $user = User::find($request->user_id);
+
+    if (!$user) {
+        return response()->json(['valid' => false, 'message' => 'User not found'], 404);
+    }
+
+    if (Hash::check($request->password, $user->password)) {
+        return response()->json(['valid' => true], 200);
+    } else {
+        return response()->json(['valid' => false, 'message' => 'Incorrect password'], 401);
+    }
+}
     
 
 }
