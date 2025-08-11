@@ -153,5 +153,31 @@ public function verifyPassword(Request $request)
     }
 }
     
+    public function updateLevel(Request $request, $id)
+    {
+        $request->validate([
+            'level_type' => 'required|string|in:english_level,french_level,arabic_level',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $levelType = $request->level_type;
+
+        $currentLevel = $user->$levelType;
+        if ($currentLevel < 10) {
+            $user->$levelType = $currentLevel + 1;
+            $user->save();
+        }
+
+        return response()->json([
+            'message' => 'Level updated successfully',
+            'level_type' => $levelType,
+            'new_level' => $user->$levelType
+        ]);
+    }
 
 }

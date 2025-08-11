@@ -90,3 +90,5 @@ Route::get('/user-progress/stats/{userId}', [UserProgressController::class, 'get
 Route::get('/dashboard/users', [UserController::class, 'getUserDashboardStats']);
 
 Route::post('/users/verify-password', [UserController::class, 'verifyPassword']);
+
+Route::post('/users/{id}/update-level', [UserController::class, 'updateLevel']);
